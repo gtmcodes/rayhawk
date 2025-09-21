@@ -430,17 +430,129 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .calculator-container {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
             .form-row {
                 grid-template-columns: 1fr;
             }
 
-            .revenue-item, .cost-saving-item {
+            .column-headers {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 0.5rem;
+            }
+
+            .column-headers > div {
+                display: none;
+            }
+
+            .column-headers .header-description {
+                display: block;
+                text-align: center;
+                font-size: 1rem;
+            }
+
+            .revenue-item, .cost-saving-item {
+                grid-template-columns: 1fr;
+                text-align: left;
+                gap: 0.5rem;
+                padding: 1rem 0.75rem;
+            }
+
+            .revenue-item > div:first-child, 
+            .cost-saving-item > div:first-child {
+                margin-bottom: 0.75rem;
+            }
+
+            .item-description {
+                font-size: 0.95rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .item-detail {
+                font-size: 0.8rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .item-units, .item-rate, .item-total {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 0.5rem;
+                margin-bottom: 0.25rem;
+                font-size: 0.9rem;
+            }
+
+            .item-units::before {
+                content: "Units: ";
+                font-weight: 600;
+                color: #666;
+            }
+
+            .item-rate::before {
+                content: "Rate: ";
+                font-weight: 600;
+                color: #666;
+            }
+
+            .item-total::before {
+                content: "Total: ";
+                font-weight: 600;
+                color: #666;
             }
 
             .summary-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                padding: 1rem;
+            }
+
+            .summary-value {
+                font-size: 1.5rem;
+            }
+
+            .download-button {
+                width: calc(100% - 2rem);
+                margin: 1rem;
+                padding: 0.875rem 1rem;
+                font-size: 1rem;
+                white-space: normal;
+                text-align: center;
+                line-height: 1.3;
+            }
+
+            .toggle-container {
+                width: 40px;
+                height: 20px;
+                margin-right: 8px;
+            }
+
+            .toggle-slider:before {
+                height: 14px;
+                width: 14px;
+                left: 3px;
+                bottom: 3px;
+            }
+
+            .toggle-container input:checked + .toggle-slider:before {
+                transform: translateX(20px);
+            }
+
+            .tooltip-content {
+                width: 250px;
+                margin-left: -125px;
+                font-size: 11px;
             }
         }
     </style>
