@@ -1,13 +1,1080 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAYHAWK System Financial ROI Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .calculator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            width: 300px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background-image: url('https://i.postimg.cc/L5Gw07yv/1bda412f-a59f-409d-83c7-5ae9c3542d53.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: white;
+            border: 1px solid white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            background: #FC6C00;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            color: #333;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group.half-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        input[type="number"] {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: #333;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #FC6C00;
+        }
+
+        .results-section {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .column-headers {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: #e8e8e8;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid #d0d0d0;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+        }
+
+        .column-headers .header-description {
+            text-align: left;
+        }
+
+        .revenue-item, .cost-saving-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 0;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+        }
+
+        .revenue-item:last-child, .cost-saving-item:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        .item-description {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .item-detail {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .item-units, .item-rate, .item-total {
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .item-total {
+            color: #FC6C00;
+            font-weight: 600;
+        }
+
+        .total-row {
+            background: #FC6C00;
+            color: white;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .total-row .item-description,
+        .total-row .item-units,
+        .total-row .item-rate,
+        .total-row .item-total {
+            color: white;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .summary-card {
+            background: rgba(252, 108, 0, 0.1);
+            border: 1px solid rgba(252, 108, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FC6C00;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .note {
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .footer {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            color: #999;
+        }
+
+        .footer h3 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .tooltip-icon {
+            width: 16px;
+            height: 16px;
+            background: #FC6C00;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .tooltip-content {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-content,
+        .tooltip.active .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .notes-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .notes-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .note-link {
+            color: #FC6C00;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .note-link:hover {
+            text-decoration: underline;
+        }
+
+        .notes-content p:target {
+            background-color: rgba(252, 108, 0, 0.1);
+            border-left: 4px solid #FC6C00;
+            padding-left: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .email-link {
+            color: #FC6C00;
+            text-decoration: none;
+        }
+
+        .email-link:hover {
+            text-decoration: underline;
+        }
+
+        .toggle-container {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .toggle-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-container input:checked + .toggle-slider {
+            background-color: #FC6C00;
+        }
+
+        .toggle-container input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .download-button {
+            display: block;
+            width: auto;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background: #FC6C00;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .download-button:hover {
+            background: #e55a00;
+        }
+
+        @media print {
+            .download-button {
+                display: none;
+            }
+            
+            body {
+                background: white;
+                color: black;
+                padding: 1rem;
+            }
+            
+            .section {
+                border: 1px solid #ccc;
+                margin-bottom: 1rem;
+                page-break-inside: avoid;
+            }
+            
+            .section-header {
+                background: #FC6C00 !important;
+                color: white !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .revenue-item, .cost-saving-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <header class="header">
+            <div class="logo"></div>
+            <h1>RAYHAWK System Financial ROI Calculator</h1>
+            <p class="subtitle">Calculate the return on investment of adding Rayhawk to your business operations.</p>
+        </header>
+
+        <!-- INPUTS SECTION -->
+        <div class="section">
+            <div class="section-header">
+                📝 Your Business Inputs
+            </div>
+            <div class="section-content">
+                <div class="form-grid">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="annualThroughput">Current Annual Throughput (tons)</label>
+                            <input type="number" id="annualThroughput" value="2500000" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="railcarCapacity">Railcar Capacity (tons)</label>
+                            <input type="number" id="railcarCapacity" value="100" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="carsPerYear">Number of Cars per Year</label>
+                            <input type="number" id="carsPerYear" value="25000" min="1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="currentLoadingTime">Current Loading Time per Car (minutes)</label>
+                            <input type="number" id="currentLoadingTime" value="7.00" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="rayhawkLoadingTime">RAYHAWK Loading Time per Car (minutes)</label>
+                            <input type="number" id="rayhawkLoadingTime" value="5.00" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">Product Selling Price ($/ton)</label>
+                            <input type="number" id="productPrice" value="350" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="railcarEmployees">Railcar Employees (opening/closing)</label>
+                            <input type="number" id="railcarEmployees" value="2" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="otherOperators">Other Supporting Operators</label>
+                            <input type="number" id="otherOperators" value="4" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="utilizationRate">On-task Utilization Rate (%)</label>
+                            <input type="number" id="utilizationRate" value="60" min="0" max="100">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalRailEmployees">Total Rail Employees at Facility</label>
+                            <input type="number" id="totalRailEmployees" value="40" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="labourCost">Labour Standard Cost ($/hour)</label>
+                            <input type="number" id="labourCost" value="75" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="contaminatedCars">Contaminated/Rejected Cars per Year</label>
+                            <input type="number" id="contaminatedCars" value="5" min="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="demurrageFees">Demurrage Fees ($/car/day)</label>
+                            <input type="number" id="demurrageFees" value="100" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="shippingRebates">Shipping Rebates ($/car)</label>
+                            <input type="number" id="shippingRebates" value="50" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <!-- Empty space for alignment -->
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="systemInvestment">RAYHAWK System Investment ($)</label>
+                            <input type="number" id="systemInvestment" value="2200000" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="note">
+                    <strong>Note:</strong> To change the ROI output, change the inputs and the outputs below will automatically update
+                </div>
+            </div>
+        </div>
+
+        <!-- INCREMENTAL ANNUAL REVENUES SECTION -->
+        <div class="section">
+            <div class="section-header">
+                💰 Incremental Annual Revenues
+            </div>
+            <div class="section-content">
+                <div class="results-section">
+                    <div class="column-headers">
+                        <div class="header-description">DESCRIPTION</div>
+                        <div>UNITS</div>
+                        <div>AMOUNT PER UNIT</div>
+                        <div>ANNUAL BENEFIT</div>
+                    </div>
+                    <div class="revenue-item">
+                        <div>
+                            <div class="item-description">
+                                Additional Throughput Capacity
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        Current Annual Throughput ÷ (Cars per Year × RAYHAWK Loading Time) × (Cars per Year × Current Loading Time) - Current Annual Throughput<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Additional Throughput Capacity × $/ton = Annual Revenue Potential
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Revenue growth opportunity from increasing throughput volume capacity</div>
+                        </div>
+                        <div class="item-units" id="additionalThroughputUnits">1,000,000 tons</div>
+                        <div class="item-rate" id="additionalThroughputRate">$350</div>
+                        <div class="item-total" id="additionalThroughputTotal">$350,000,000</div>
+                    </div>
+                </div>
+                <div class="note">
+                    <strong>Note:</strong> Illustrative calculation, excluded from financial ROI below given variability to other production and transportation capacity constraints.
+                </div>
+            </div>
+        </div>
+
+        <!-- INCREMENTAL ANNUAL COST SAVINGS SECTION -->
+        <div class="section">
+            <div class="section-header">
+                💵 Incremental Annual Cost Savings
+            </div>
+            <div class="section-content">
+                <div class="results-section">
+                    <div class="column-headers">
+                        <div class="header-description">DESCRIPTION</div>
+                        <div>UNITS</div>
+                        <div>AMOUNT PER UNIT</div>
+                        <div>ANNUAL BENEFIT</div>
+                    </div>
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="directLabourToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Direct Labour Reduction
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        ((Cars per Year × Current Loading Time) ÷ 60 × Railcar Employees) ÷ (Utilization Rate ÷ 100) × Labour Cost per Hour<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Direct Labour Hours × $/hour = Annual Savings
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Savings from automating lid opening & closing tasks</div>
+                        </div>
+                        <div class="item-units" id="directLabourUnits">9,722 hours</div>
+                        <div class="item-rate" id="directLabourRate">$75</div>
+                        <div class="item-total" id="directLabourTotal">$729,167</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="indirectLabourToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Indirect Labour Reduction
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        (((Current Loading Time - RAYHAWK Loading Time) × Cars per Year) ÷ 60 × Other Operators) ÷ (Utilization Rate ÷ 100) × Labour Cost per Hour<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Indirect Labour Hours × $/hour = Annual Savings
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Savings from reducing overall load time</div>
+                        </div>
+                        <div class="item-units" id="indirectLabourUnits">5,556 hours</div>
+                        <div class="item-rate" id="indirectLabourRate">$75</div>
+                        <div class="item-total" id="indirectLabourTotal">$416,667</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="labourShortagesToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Labour Shortages
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        Total Rail Employees × $4,400 per hire<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Number of Positions × Cost per Hire = Annual Savings
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Savings from reducing positions to recruit and retain <a href="#note1" class="note-link">(Note 1)</a></div>
+                        </div>
+                        <div class="item-units" id="labourShortagesUnits">40 hires</div>
+                        <div class="item-rate" id="labourShortagesRate">$4,400</div>
+                        <div class="item-total" id="labourShortagesTotal">$176,000</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="productReturnsToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Reduced Risk of Product Returns
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        Contaminated Cars per Year × Railcar Capacity × Product Price per ton<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Contaminated Cars × Railcar Capacity × $/ton = Annual Savings
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Reducing contamination claims with cavity inspection and evidence</div>
+                        </div>
+                        <div class="item-units" id="productReturnsUnits">500 tons</div>
+                        <div class="item-rate" id="productReturnsRate">$350</div>
+                        <div class="item-total" id="productReturnsTotal">$175,000</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="safetyIncidentsToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Reduced Safety Incidents
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        Total Rail Employees × $1,040 average cost per employee<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Number of Employees × Safety Cost per Employee = Annual Savings
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Eliminating risks of lid opening & closing incidents <a href="#note2" class="note-link">(Note 2)</a></div>
+                        </div>
+                        <div class="item-units" id="safetyIncidentsUnits">40 employees</div>
+                        <div class="item-rate" id="safetyIncidentsRate">$1,040</div>
+                        <div class="item-total" id="safetyIncidentsTotal">$41,600</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="demurrageToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Reduced Demurrage Fees
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        (Cars per Year ÷ 52 weeks) × Demurrage Fees per car/day<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Weekly Car Volume × Demurrage Rate = Annual Savings
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Savings from reducing demurrage penalties through faster loading</div>
+                        </div>
+                        <div class="item-units" id="demurrageUnits">TBD</div>
+                        <div class="item-rate" id="demurrageRate">$100</div>
+                        <div class="item-total" id="demurrageTotal">$0</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="shippingRebatesToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Shipping Rebates
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        (Cars per Year ÷ 52 weeks) × Shipping Rebates per car<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Weekly Car Volume × Rebate Rate = Annual Benefits
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Additional rebates from improved shipping efficiency</div>
+                        </div>
+                        <div class="item-units" id="shippingRebatesUnits">TBD</div>
+                        <div class="item-rate" id="shippingRebatesInputRate">$50</div>
+                        <div class="item-total" id="shippingRebatesTotal">$0</div>
+                    </div>
+
+                    <div class="cost-saving-item">
+                        <div>
+                            <div class="item-description">
+                                <label class="toggle-container">
+                                    <input type="checkbox" id="insuranceToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                Lower Insurance Premiums
+                                <span class="tooltip">
+                                    <span class="tooltip-icon">?</span>
+                                    <span class="tooltip-content">
+                                        <strong>Calculation:</strong><br>
+                                        Fixed annual reduction estimate: $40,000<br><br>
+                                        <strong>Formula:</strong><br>
+                                        Estimated reduction in WCB and risk insurance premiums
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="item-detail">Estimated reduction in WCB and risk insurance premiums</div>
+                        </div>
+                        <div class="item-units" id="insuranceUnits">Annual</div>
+                        <div class="item-rate" id="insuranceRate">-</div>
+                        <div class="item-total" id="insuranceTotal">$40,000</div>
+                    </div>
+
+                    <div class="cost-saving-item total-row">
+                        <div class="item-description">📈 Total Annual Benefit</div>
+                        <div class="item-units">-</div>
+                        <div class="item-rate">-</div>
+                        <div class="item-total" id="totalAnnualBenefit">$1,578,433</div>
+                    </div>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-value" id="annualROI">113%</div>
+                        <div class="summary-label">Annualized ROI</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="paybackPeriod">0.89</div>
+                        <div class="summary-label">Payback Period (years)</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="netInvestment">$1,400,000</div>
+                        <div class="summary-label">Net Investment</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOWNLOAD BUTTON -->
+        <button class="download-button" id="downloadPDF">Download Rayhawk ROI Results (PDF) 🚀</button>
+
+        <!-- NOTES SECTION -->
+        <div class="section">
+            <div class="section-header">
+                📝 Notes
+            </div>
+            <div class="section-content">
+                <div class="notes-content">
+                    <p id="note1"><strong>(1)</strong> - Given the nature of the work, and oftentimes more remote location of faciliaties, railcar loaders/operators can be a difficult position to recruit and retain reliable workers. The average cost per hire for the utilities/mining/agriculture sectors is $4,400 per Society for Human Resource Management. Annual benefit reflects assumption that entire workforce turns over once per year.</p>
+                    
+                    <p id="note2"><strong>(2)</strong> - Average direct cost per worker of work injuries in 2022 is $1,040 per US National Safety Council. This amount includes medical expenses, administrative expenses, and productivity impacts.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <h3>RAYHAWK Autonomous Railcar Loading Solutions - Improving safety, reliability and efficiency</h3>
+            <p>For detailed analysis and customized ROI calculations, contact: <a href="mailto:info@rayhawk.ca" class="email-link">info@rayhawk.ca</a></p>
+        </footer>
+    </div>
+
+    <script>
+        class ROICalculator {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.calculate();
+            }
+
+            bindEvents() {
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    input.addEventListener('input', () => this.calculate());
+                });
+
+                // Handle all cost savings toggles
+                const toggles = [
+                    'directLabourToggle',
+                    'indirectLabourToggle', 
+                    'labourShortagesToggle',
+                    'productReturnsToggle',
+                    'safetyIncidentsToggle',
+                    'demurrageToggle',
+                    'shippingRebatesToggle',
+                    'insuranceToggle'
+                ];
+                
+                toggles.forEach(toggleId => {
+                    document.getElementById(toggleId).addEventListener('change', () => {
+                        this.calculate();
+                    });
+                });
+
+                // Handle tooltip clicks for mobile
+                document.querySelectorAll('.tooltip').forEach(tooltip => {
+                    tooltip.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Close other tooltips
+                        document.querySelectorAll('.tooltip.active').forEach(activeTooltip => {
+                            if (activeTooltip !== tooltip) {
+                                activeTooltip.classList.remove('active');
+                            }
+                        });
+                        
+                        // Toggle current tooltip
+                        tooltip.classList.toggle('active');
+                    });
+                });
+
+                // Close tooltips when clicking outside
+                document.addEventListener('click', () => {
+                    document.querySelectorAll('.tooltip.active').forEach(tooltip => {
+                        tooltip.classList.remove('active');
+                    });
+                });
+
+                // Handle PDF download
+                document.getElementById('downloadPDF').addEventListener('click', () => {
+                    // Get current date for filename
+                    const today = new Date();
+                    const dateString = today.toISOString().split('T')[0];
+                    
+                    // Set document title for PDF
+                    const originalTitle = document.title;
+                    document.title = `RAYHAWK ROI Analysis - ${dateString}`;
+                    
+                    // Trigger print dialog
+                    window.print();
+                    
+                    // Restore original title
+                    document.title = originalTitle;
+                });
+            }
+
+            calculate() {
+                const data = this.getInputData();
+                this.calculateROI(data);
+            }
+
+            getInputData() {
+                return {
+                    annualThroughput: parseFloat(document.getElementById('annualThroughput').value) || 0,
+                    railcarCapacity: parseFloat(document.getElementById('railcarCapacity').value) || 0,
+                    carsPerYear: parseFloat(document.getElementById('carsPerYear').value) || 0,
+                    currentLoadingTime: parseFloat(document.getElementById('currentLoadingTime').value) || 0,
+                    rayhawkLoadingTime: parseFloat(document.getElementById('rayhawkLoadingTime').value) || 0,
+                    productPrice: parseFloat(document.getElementById('productPrice').value) || 0,
+                    railcarEmployees: parseFloat(document.getElementById('railcarEmployees').value) || 0,
+                    otherOperators: parseFloat(document.getElementById('otherOperators').value) || 0,
+                    utilizationRate: parseFloat(document.getElementById('utilizationRate').value) || 0,
+                    totalRailEmployees: parseFloat(document.getElementById('totalRailEmployees').value) || 0,
+                    labourCost: parseFloat(document.getElementById('labourCost').value) || 0,
+                    contaminatedCars: parseFloat(document.getElementById('contaminatedCars').value) || 0,
+                    demurrageFees: parseFloat(document.getElementById('demurrageFees').value) || 0,
+                    shippingRebates: parseFloat(document.getElementById('shippingRebates').value) || 0,
+                    systemInvestment: parseFloat(document.getElementById('systemInvestment').value) || 0
+                };
+            }
+
+            calculateROI(data) {
+                // Incremental Annual Revenues
+                const additionalThroughput = data.annualThroughput / (data.carsPerYear * data.rayhawkLoadingTime) * (data.carsPerYear * data.currentLoadingTime) - data.annualThroughput;
+                const additionalThroughputRevenue = additionalThroughput * data.productPrice;
+
+                // Incremental Annual Cost Savings
+                const timeSavedPerCar = data.currentLoadingTime - data.rayhawkLoadingTime; // minutes
+                const totalTimeSavedPerYear = (timeSavedPerCar * data.carsPerYear) / 60; // hours
+                
+                // Direct labour reduction - lid opening/closing automation
+                const directLabourHours = ((data.carsPerYear * data.currentLoadingTime) / 60 * data.railcarEmployees) / (data.utilizationRate / 100);
+                const directLabourEnabled = document.getElementById('directLabourToggle').checked;
+                const directLabourSavings = directLabourEnabled ? directLabourHours * data.labourCost : 0;
+
+                // Indirect labour reduction - overall time savings
+                const indirectLabourHours = (((data.currentLoadingTime - data.rayhawkLoadingTime) * data.carsPerYear) / 60 * data.otherOperators) / (data.utilizationRate / 100);
+                const indirectLabourEnabled = document.getElementById('indirectLabourToggle').checked;
+                const indirectLabourSavings = indirectLabourEnabled ? indirectLabourHours * data.labourCost : 0;
+
+                // Labour shortages - cost per hire reduction
+                const labourShortagesEnabled = document.getElementById('labourShortagesToggle').checked;
+                const labourShortagesSavings = labourShortagesEnabled ? data.totalRailEmployees * 4400 : 0; // $4,400 per hire
+
+                // Product returns reduction
+                const productReturnsEnabled = document.getElementById('productReturnsToggle').checked;
+                const productReturnsSavings = productReturnsEnabled ? data.contaminatedCars * data.railcarCapacity * data.productPrice : 0;
+
+                // Safety incidents reduction
+                const safetyIncidentsEnabled = document.getElementById('safetyIncidentsToggle').checked;
+                const safetyIncidentsSavings = safetyIncidentsEnabled ? data.totalRailEmployees * 1040 : 0; // $1,040 per employee average
+
+                // Insurance premiums - check if toggle is enabled
+                const insuranceEnabled = document.getElementById('insuranceToggle').checked;
+                const insuranceSavings = insuranceEnabled ? 40000 : 0; // Fixed amount from Excel
+
+                // Demurrage fees - cars per year divided by 52 weeks
+                const demurrageUnits = data.carsPerYear / 52;
+                const demurrageEnabled = document.getElementById('demurrageToggle').checked;
+                const demurrageSavings = demurrageEnabled ? demurrageUnits * data.demurrageFees : 0;
+
+                // Shipping rebates - cars per year divided by 52 weeks  
+                const shippingRebatesUnits = data.carsPerYear / 52;
+                const shippingRebatesEnabled = document.getElementById('shippingRebatesToggle').checked;
+                const shippingRebatesSavings = shippingRebatesEnabled ? shippingRebatesUnits * data.shippingRebates : 0;
+
+                // Total annual benefit
+                const totalAnnualBenefit = directLabourSavings + indirectLabourSavings + 
+                    labourShortagesSavings + productReturnsSavings + safetyIncidentsSavings + 
+                    insuranceSavings + demurrageSavings + shippingRebatesSavings;
+
+                // ROI calculations
+                const netInvestment = data.systemInvestment;
+                const annualROI = netInvestment > 0 ? (totalAnnualBenefit / netInvestment) * 100 : 0;
+                const paybackPeriod = totalAnnualBenefit > 0 ? netInvestment / totalAnnualBenefit : 0;
+
+                // Update display
+                this.updateDisplay({
+                    // Revenues
+                    additionalThroughputUnits: this.formatNumber(additionalThroughput) + ' tons',
+                    additionalThroughputRate: this.formatCurrency(data.productPrice),
+                    additionalThroughputTotal: this.formatCurrency(additionalThroughputRevenue),
+
+                    // Cost savings
+                    directLabourUnits: this.formatNumber(Math.round(directLabourHours)) + ' hours',
+                    directLabourRate: this.formatCurrency(data.labourCost),
+                    directLabourTotal: this.formatCurrency(directLabourSavings),
+
+                    indirectLabourUnits: this.formatNumber(Math.round(indirectLabourHours)) + ' hours',
+                    indirectLabourRate: this.formatCurrency(data.labourCost),
+                    indirectLabourTotal: this.formatCurrency(indirectLabourSavings),
+
+                    labourShortagesUnits: data.totalRailEmployees + ' hires',
+                    labourShortagesRate: this.formatCurrency(4400),
+                    labourShortagesTotal: this.formatCurrency(labourShortagesSavings),
+
+                    productReturnsUnits: (data.contaminatedCars * data.railcarCapacity) + ' tons',
+                    productReturnsRate: this.formatCurrency(data.productPrice),
+                    productReturnsTotal: this.formatCurrency(productReturnsSavings),
+
+                    safetyIncidentsUnits: data.totalRailEmployees + ' employees',
+                    safetyIncidentsRate: this.formatCurrency(1040),
+                    safetyIncidentsTotal: this.formatCurrency(safetyIncidentsSavings),
+
+                    insuranceUnits: 'Annual',
+                    insuranceRate: '-',
+                    insuranceTotal: this.formatCurrency(insuranceSavings),
+
+                    demurrageUnits: Math.round(demurrageUnits) + ' cars/week',
+                    demurrageRate: this.formatCurrency(data.demurrageFees),
+                    demurrageTotal: this.formatCurrency(demurrageSavings),
+
+                    shippingRebatesUnits: Math.round(shippingRebatesUnits) + ' cars/week',
+                    shippingRebatesInputRate: this.formatCurrency(data.shippingRebates),
+                    shippingRebatesTotal: this.formatCurrency(shippingRebatesSavings),
+
+                    // Summary
+                    totalAnnualBenefit: this.formatCurrency(totalAnnualBenefit),
+                    annualROI: Math.round(annualROI) + '%',
+                    paybackPeriod: paybackPeriod.toFixed(2),
+                    netInvestment: this.formatCurrency(netInvestment)
+                });
+            }
+
+            updateDisplay(results) {
+                Object.keys(results).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.textContent = results[key];
+                    }
+                });
+            }
+
+            formatCurrency(amount) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            }
+
+            formatNumber(num) {
+                return new Intl.NumberFormat('en-US').format(Math.round(num));
+            }
+        }
+
+        // Initialize calculator when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new ROICalculator();
+        });
+    </script>
+</body>
 </html>
